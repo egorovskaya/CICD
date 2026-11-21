@@ -59,10 +59,10 @@ jobs:
           password: ${{ secrets.VM_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.VM_USERNAME }}/ToDoList:latest .
+        run: docker build -t ${{ secrets.VM_USERNAME }}/todolist:latest .
 
       - name: Push Docker image
-        run: docker push ${{ secrets.VM_USERNAME }}/ToDoList
+        run: docker push ${{ secrets.VM_USERNAME }}/todolist
 
   deploy:
     needs: build-and-push-docker
