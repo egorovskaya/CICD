@@ -77,7 +77,7 @@ jobs:
           key: ${{ secrets.VM_SSH_KEY }}
           port: 50000
           script: |
-            docker pull ${{ secrets.VM_USERNAME }}/ToDoList:latest
-            docker stop ToDoList || true
-            docker rm ToDoList || true
-            docker run -d --name ToDoList -p 8080:8080 ${{ secrets.VM_USERNAME }}/ToDoList:latest
+            docker pull ${{ secrets.VM_USERNAME }}/todolist:latest
+            docker stop todolist || true
+            docker rm todolist || true
+            docker run -d --name ToDoList -p 8080:8080 ${{ secrets.VM_USERNAME }}/todolist:latest
