@@ -30,7 +30,7 @@ jobs:
 
       - name: Save JAR path
         id: set-jar-path
-        run: echo "::set-output name=jar-path::target/ToDoList-0.0.1-SNAPSHOT.jar
+        run: echo "::set-output name=jar-path::target/ToDoList-0.0.1-SNAPSHOT.jar"
 
       - name: Upload JAR artefact
         uses: actions/upload-artifact@v4
