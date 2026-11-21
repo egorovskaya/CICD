@@ -80,4 +80,4 @@ jobs:
             docker pull ${{ secrets.VM_USERNAME }}/todolist:latest
             docker stop todolist || true
             docker rm todolist || true
-            docker run -d --name ToDoList -p 8080:8080 ${{ secrets.VM_USERNAME }}/todolist:latest
+            docker run -d --name todolist -p 8080:8080 ${{ secrets.VM_USERNAME }}/todolist:latest
