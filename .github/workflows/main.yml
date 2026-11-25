@@ -1,0 +1,92 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    outputs:
+      jar-path: ${{ steps.set-jar-path.outputs.jar-path}}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up JDK17
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: mvn clean package --no-transfer-progress
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Save JAR path
+        id: set-jar-path
+        run: echo "::set-output name=jar-path::target/ToDoList-0.0.1-SNAPSHOT.jar"
+
+      - name: Upload JAR artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ToDoList-jar
+          path: target/ToDoList-0.0.1-SNAPSHOT.jar
+
+  build-and-push-docker:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ToDoList-jar
+          path: target
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.VM_USERNAME }}/todolist:latest .
+
+      - name: Build Completed Successfully
+        if: success()
+        run: echo "::notice::Сборка завершена успешно!"
+
+      - name: Build Failed
+        if: failure()
+        run: echo "::error::Сборка завершилась с ошибкой!"
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.VM_USERNAME }}/todolist
+
+  deploy:
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy on VM via host machine
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          port: 50000
+          script: |
+            docker pull ${{ secrets.VM_USERNAME }}/todolist:latest
+            docker stop todolist || true
+            docker rm todolist || true
+            docker run -d --name todolist -p 8080:8080 ${{ secrets.VM_USERNAME }}/todolist:latest
