@@ -25,8 +25,9 @@ class RestControllerListTest {
 
     @Test
     public void testGet() throws Exception {
-        Task task = new Task(1, "Homework", false, "18.11.2026");
-        mockMvc.perform(post("/tasks").content(task.toString()));
+        mockMvc.perform(post("/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\":1,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"));
 
         mockMvc.perform(get("/tasks"))
                 .andExpect(status().isOk());
@@ -35,13 +36,9 @@ class RestControllerListTest {
 
     @Test
     public void testPost() throws Exception {
-        Task task = new Task(2, "Homework", false, "18.11.2026");
-        Gson gson = new Gson();
-        String jsonContent = gson.toJson(task);
-
         mockMvc.perform(post("/tasks")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"id\":2,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"))
                 .andExpect(status().isOk());
     }
 
@@ -49,11 +46,11 @@ class RestControllerListTest {
     public void testPut() throws Exception {
         mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":0,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"));
+                .content("{\"id\":3,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"));
 
-        mockMvc.perform(put("/tasks/0")
+        mockMvc.perform(put("/tasks/3")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":0,\"title\":\"Homework\",\"completed\":true,\"createdAt\":\"2026-11-18\"}"))
+                        .content("{\"id\":3,\"title\":\"Homework\",\"completed\":true,\"createdAt\":\"2026-11-18\"}"))
                 .andExpect(status().isOk());
     }
 
@@ -61,28 +58,9 @@ class RestControllerListTest {
     public void testDelete() throws Exception {
         mockMvc.perform(post("/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":0,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"));
+                .content("{\"id\":4,\"title\":\"Homework\",\"completed\":false,\"createdAt\":\"2026-11-18\"}"));
 
-        mockMvc.perform(delete("/tasks/0"))
+        mockMvc.perform(delete("/tasks/4"))
                 .andExpect(status().isOk());
     }
-//                .andExpect(jsonPath("$.title").value("New Updated Title"))
-//                .andExpect(jsonPath("$.completed").value(true));
-        //Task task = new Task(1, "Homework", false, "18.11.2026");
-        //mockMvc.perform(post("/tasks").content(task.toString()));
-
-//        Task task2 = new Task(1, "Homework", true, "18.11.2026");
-//        mockMvc.perform(put("/tasks/1").content(task2.toString()))
-//                .andExpect(status().isOk());
-//    }
-//
-//    @Test
-//    public void testDelete() throws Exception {
-//        //Task task = new Task(1, "Homework", false, "18.11.2026");
-//        //mockMvc.perform(post("/tasks").content(task.toString()));
-//
-//        mockMvc.perform(delete("/tasks/1"))
-//                .andExpect(status().isOk());
-//                //.andExpect(content().string(""));
-//    }
 }

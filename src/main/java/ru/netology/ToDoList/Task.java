@@ -16,4 +16,32 @@ public class Task {
     public int getID() {
         return id;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean getIsCompleted() {
+        return completed;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
 }
